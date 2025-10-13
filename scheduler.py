@@ -1,11 +1,12 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
-from models import Task, User
-from email_service import send_due_date_reminder
-from app import app
 
 def check_due_tasks():
-    with app.app_context():
+    from flask import current_app
+    with current_app.app_context():
+        from models import Task, User
+        from email_service import send_due_date_reminder
+        
         now = datetime.utcnow()
         tomorrow = now + timedelta(days=1)
         

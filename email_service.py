@@ -1,5 +1,5 @@
 from flask_mail import Message
-from app import mail
+from extensions import mail
 from models import Task, User
 
 def send_task_assignment_email(user, task):

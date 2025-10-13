@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import flash, redirect, url_for
 from flask_login import current_user
-from app import db, bcrypt
+from extensions import db, bcrypt
 from models import User
 
 def admin_required(f):
