@@ -40,6 +40,7 @@
                         <td>
                             {% if user.id != current_user.id %}
                             <form method="POST" action="{{ url_for('change_role', user_id=user.id) }}" class="d-inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <select name="role" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
                                     <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
                                     <option value="manager" {% if user.role == 'manager' %}selected{% endif %}>Manager</option>

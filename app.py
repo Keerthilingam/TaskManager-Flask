@@ -1,7 +1,8 @@
 from flask import Flask
 from config import Config
-from extensions import db, bcrypt, mail, login_manager
+from extensions import db, bcrypt, mail, login_manager, csrf
 from models import User
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -9,6 +10,7 @@ app.config.from_object(Config)
 db.init_app(app)
 bcrypt.init_app(app)
 mail.init_app(app)
+csrf.init_app(app)
 login_manager.init_app(app)
 
 @login_manager.user_loader
@@ -23,6 +25,7 @@ if __name__ == '__main__':
         db.create_all()
         from utils import create_default_admin
         create_default_admin()
-        from scheduler import init_scheduler
-        init_scheduler()
+        if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+            from scheduler import init_scheduler
+            init_scheduler()
     app.run(host='0.0.0.0', port=5000, debug=True)

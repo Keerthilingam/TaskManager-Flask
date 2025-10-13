@@ -112,6 +112,13 @@ def register_routes(app):
         form.assigned_to.choices = [(0, 'Unassigned')] + [(u.id, u.username) for u in users]
         
         if form.validate_on_submit():
+            assigned_user_id = form.assigned_to.data if form.assigned_to.data != 0 else None
+            
+            if assigned_user_id and assigned_user_id != current_user.id:
+                if not current_user.is_manager():
+                    flash('Only managers and admins can assign tasks to other users.', 'danger')
+                    return redirect(url_for('dashboard'))
+            
             task = Task(
                 title=form.title.data,
                 description=form.description.data,
@@ -119,7 +126,7 @@ def register_routes(app):
                 status=form.status.data,
                 due_date=form.due_date.data,
                 created_by=current_user.id,
-                assigned_to=form.assigned_to.data if form.assigned_to.data != 0 else None
+                assigned_to=assigned_user_id
             )
             db.session.add(task)
             db.session.commit()
@@ -149,12 +156,19 @@ def register_routes(app):
         
         if form.validate_on_submit():
             old_assignee = task.assigned_to
+            new_assignee = form.assigned_to.data if form.assigned_to.data != 0 else None
+            
+            if new_assignee and new_assignee != current_user.id and new_assignee != old_assignee:
+                if not current_user.is_manager():
+                    flash('Only managers and admins can reassign tasks to other users.', 'danger')
+                    return redirect(url_for('dashboard'))
+            
             task.title = form.title.data
             task.description = form.description.data
             task.priority = form.priority.data
             task.status = form.status.data
             task.due_date = form.due_date.data
-            task.assigned_to = form.assigned_to.data if form.assigned_to.data != 0 else None
+            task.assigned_to = new_assignee
             db.session.commit()
             
             if task.assigned_to and task.assigned_to != old_assignee:
