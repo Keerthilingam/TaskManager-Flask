@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Task Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-graph-up"></i> Analytics Dashboard</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-primary mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Total Tasks</h6>
+                <h3 class="card-title">{{ stats.total }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Completed</h6>
+                <h3 class="card-title">{{ stats.completed }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">In Progress</h6>
+                <h3 class="card-title">{{ stats.in_progress }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-danger mb-3">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Overdue</h6>
+                <h3 class="card-title">{{ stats.overdue }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Task Completion Rate</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="progress" style="height: 30px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ stats.completion_rate }}%;" aria-valuenow="{{ stats.completion_rate }}" aria-valuemin="0" aria-valuemax="100">
+                        {{ stats.completion_rate }}%
+                    </div>
+                </div>
+                <p class="mt-3 text-muted">
+                    {{ stats.completed }} out of {{ stats.total }} tasks completed
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Priority Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-circle-fill text-danger"></i> High Priority</span>
+                        <span>{{ stats.priority.high }}</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-danger" style="width: {% if stats.total > 0 %}{{ (stats.priority.high / stats.total * 100)|round }}{% else %}0{% endif %}%"></div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-circle-fill text-warning"></i> Medium Priority</span>
+                        <span>{{ stats.priority.medium }}</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-warning" style="width: {% if stats.total > 0 %}{{ (stats.priority.medium / stats.total * 100)|round }}{% else %}0{% endif %}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-circle-fill text-info"></i> Low Priority</span>
+                        <span>{{ stats.priority.low }}</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-info" style="width: {% if stats.total > 0 %}{{ (stats.priority.low / stats.total * 100)|round }}{% else %}0{% endif %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-people"></i> User Productivity</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Total Tasks</th>
+                        <th>Completed Tasks</th>
+                        <th>Completion Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in stats.users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.total_tasks }}</td>
+                        <td>{{ user.completed_tasks }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                    <div class="progress-bar" style="width: {{ user.completion_rate }}%">
+                                        {{ user.completion_rate }}%
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
