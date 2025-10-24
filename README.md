@@ -1,134 +1,154 @@
-# Intelligent Task Management System
-
+Intelligent Task Management System
 A comprehensive Flask-based task management application with user authentication, role-based access control, email notifications, and analytics dashboard.
+Features
 
-## Features
+🔐 User Authentication: Secure registration and login with password hashing (bcrypt)
+👥 Role-Based Access Control: Three user roles (Admin, Manager, User)
+✅ Task Management: Full CRUD operations with priority, status, and due dates
+📧 Email Notifications: Automated alerts for task assignments
+⏰ Due Date Reminders: Scheduled notifications for upcoming deadlines
+📊 Analytics Dashboard: Task completion rates, priority distribution, user productivity
+🔍 Search & Filter: Find tasks by status, priority, or keywords
+📱 Responsive Design: Bootstrap 5 UI that works on all devices
 
-### Core Functionality
-- **User Authentication**: Secure registration and login system with password hashing using bcrypt
-- **Role-Based Access Control (RBAC)**: Three user roles (Admin, Manager, User) with different permissions
-- **Task Management**: Full CRUD operations for tasks with title, description, priority, status, and due dates
-- **Task Assignment**: Assign tasks to users and track task ownership
-- **Search & Filtering**: Filter tasks by status, priority, and search by keywords
-
-### Advanced Features
-- **Email Notifications**: Automated email alerts for task assignments using Flask-Mail
-- **Due Date Reminders**: Scheduled reminders for tasks approaching their due dates
-- **Analytics Dashboard**: Comprehensive metrics including:
-  - Task completion rates
-  - Overdue task tracking
-  - Priority distribution
-  - User productivity statistics
-- **Responsive Design**: Clean, modern UI using Bootstrap 5 that works on all devices
-
-### User Roles & Permissions
-- **User**: Can create, edit, and view their own tasks and assigned tasks
-- **Manager**: User permissions + access to analytics dashboard
-- **Admin**: Full system access including user management and role assignment
-
-## Getting Started
-
-### Default Admin Account
+Default Admin Account
 The system creates a default admin account on first run:
-- Email: `admin@taskmanager.com`
-- Password: `admin123`
 
-**Important**: Change this password after first login for security!
+Email: admin@taskmanager.com
+Password: admin123
 
-### Installation
+⚠️ Important: Change this password immediately after first login!
+Installation & Setup
+Prerequisites
 
-1. The application uses PostgreSQL database (already configured)
-2. All Python dependencies are installed automatically
-3. The Flask app runs on port 5000
+Python 3.8 or higher
+PostgreSQL 12 or higher
 
-### Environment Variables
+Step 1: Install PostgreSQL
+Windows:
 
-The following environment variables are available:
-- `DATABASE_URL`: PostgreSQL connection string (auto-configured)
-- `SESSION_SECRET`: Secret key for Flask sessions (auto-generated)
-- `MAIL_SERVER`: SMTP server for email notifications (optional)
-- `MAIL_PORT`: SMTP port (default: 587)
-- `MAIL_USERNAME`: Email account username (optional)
-- `MAIL_PASSWORD`: Email account password (optional)
+Download from postgresql.org/download/windows
+Run installer and follow setup wizard
+Remember the password you set for postgres user
+Default port: 5432
 
-**Note**: Email notifications are optional. If not configured, the system will print email content to console.
+Linux (Ubuntu/Debian):
+bashsudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start postgresql
+macOS:
+bashbrew install postgresql
+brew services start postgresql
+Step 2: Create Database
+Open PostgreSQL command line (psql):
+Windows: Search "SQL Shell (psql)" in Start Menu
+Linux/Mac:
+bashsudo -u postgres psql
+Then create database:
+sqlCREATE DATABASE taskmanager;
+CREATE USER taskuser WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskuser;
+\q
+Step 3: Clone Repository
+bashgit clone https://github.com/Keerthilingam/TaskManager-Flask.git
+cd TaskManager-Flask
+Step 4: Install Python Dependencies
+bashpip install -r requirements.txt
+Create requirements.txt if not exists:
+Flask==2.3.0
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.2
+Flask-WTF==3.0.1
+Flask-Mail==0.9.1
+APScheduler==3.10.1
+bcrypt==4.0.1
+email-validator==2.0.0
+psycopg2-binary==2.9.6
+WTForms==3.0.1
+Step 5: Configure Environment Variables
+Create a .env file in project root:
+env# Database Configuration
+DATABASE_URL=postgresql://taskuser:your_password@localhost:5432/taskmanager
 
-## Usage Guide
+# Flask Configuration
+SESSION_SECRET=your-secret-key-here-change-this
+FLASK_ENV=development
 
-### For Users
-1. **Register**: Create an account with username, email, and password
-2. **Create Tasks**: Add new tasks with priority, status, and due dates
-3. **Manage Tasks**: Edit, update status, or delete your tasks
-4. **Search**: Use the search and filter options to find specific tasks
+# Email Configuration (Optional)
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=your-email@gmail.com
+MAIL_PASSWORD=your-app-password
+Database URL Format:
+postgresql://username:password@host:port/database_name
+Example:
+postgresql://taskuser:mypass123@localhost:5432/taskmanager
+Step 6: Initialize Database
+bashpython app.py
+On first run, the application will:
 
-### For Managers
-- Access all user features
-- View the Analytics Dashboard for insights:
-  - Overall task completion rates
-  - Priority distribution charts
-  - User productivity metrics
+Create all database tables automatically
+Create default admin account
+Start the Flask server on http://localhost:5000
 
-### For Admins
-- Access all manager features
-- **User Management**: View all users and change their roles
-- **Full Task Access**: View and manage all tasks in the system
+Step 7: Access Application
+Open your browser and go to: http://localhost:5000
+Login with admin credentials and start using!
+Configuration Details
+Database Connection Explained
+Format: postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE
 
-## Task Features
+USERNAME: PostgreSQL user (e.g., taskuser)
+PASSWORD: User's password (e.g., mypass123)
+HOST: Database server (usually localhost)
+PORT: PostgreSQL port (default: 5432)
+DATABASE: Database name (e.g., taskmanager)
 
-### Task Properties
-- **Title**: Brief description of the task
-- **Description**: Detailed task information
-- **Priority**: Low, Medium, or High
-- **Status**: Pending, In Progress, or Completed
-- **Due Date**: Optional deadline with time
-- **Assignment**: Assign to specific users
+Email Setup (Optional)
+For Gmail:
 
-### Task States
-- **Pending**: Newly created tasks
-- **In Progress**: Tasks currently being worked on
-- **Completed**: Finished tasks
-- **Overdue**: Tasks past their due date (highlighted in red)
+Enable 2-Factor Authentication
+Generate App Password: myaccount.google.com/apppasswords
+Use App Password in MAIL_PASSWORD
 
-## Email Notifications
+Note: If email is not configured, notifications will print to console.
+User Roles & Permissions
+RolePermissionsUserCreate, edit, delete own tasks; View assigned tasksManagerAll User permissions + Analytics dashboard accessAdminAll Manager permissions + User management + View all tasks
+Usage Guide
+For Regular Users
 
-The system sends automated emails for:
-1. **Task Assignment**: When a task is assigned to a user
-2. **Due Date Reminders**: Daily check for tasks due within 24 hours
+Register: Create account with username, email, password
+Create Tasks: Click "New Task" and fill details
+Manage Tasks: Edit status, priority, or delete tasks
+Search: Use filters to find specific tasks
 
-To enable email notifications, configure these environment variables:
-- `MAIL_SERVER`: Your SMTP server (e.g., smtp.gmail.com)
-- `MAIL_USERNAME`: Your email address
-- `MAIL_PASSWORD`: Your email password or app-specific password
+For Managers
 
-## Analytics Dashboard
+Access Analytics Dashboard for insights
+View team productivity metrics
+Track task completion rates
 
-Managers and Admins can access detailed analytics:
-- **Task Overview**: Total, completed, pending, and overdue tasks
-- **Completion Rate**: Percentage of completed tasks
-- **Priority Distribution**: Visual breakdown of task priorities
-- **User Productivity**: Individual user performance metrics
+For Admins
 
-## Security Features
+Manage user roles (User → Manager → Admin)
+View and manage all system tasks
+Access complete analytics
 
-- **Password Hashing**: All passwords encrypted with bcrypt
-- **Session Management**: Secure user sessions with Flask-Login
-- **CSRF Protection**: Form protection with Flask-WTF
-- **Role-Based Access**: Route protection based on user roles
-- **Input Validation**: Server-side validation for all forms
-
-## Project Structure
-
-```
-├── app.py                 # Main application entry point
-├── config.py             # Configuration settings
-├── extensions.py         # Flask extensions initialization
-├── models.py             # Database models (User, Task)
-├── routes.py             # Application routes and views
-├── forms.py              # WTForms form definitions
-├── utils.py              # Utility functions and decorators
-├── email_service.py      # Email notification functions
-├── scheduler.py          # Background task scheduler
-├── templates/            # HTML templates
+Project Structure
+TaskManager-Flask/
+├── app.py              # Main application entry
+├── config.py           # Configuration settings
+├── extensions.py       # Flask extensions
+├── models.py           # Database models (User, Task)
+├── routes.py           # Application routes
+├── forms.py            # WTForms definitions
+├── utils.py            # Utility functions
+├── email_service.py    # Email notifications
+├── scheduler.py        # Background scheduler
+├── requirements.txt    # Python dependencies
+├── .env                # Environment variables
+├── templates/          # HTML templates
 │   ├── base.html
 │   ├── login.html
 │   ├── register.html
@@ -136,30 +156,68 @@ Managers and Admins can access detailed analytics:
 │   ├── task_form.html
 │   ├── analytics.html
 │   └── users.html
-└── static/               # Static files (CSS, JS)
+└── static/
     └── css/
         └── style.css
-```
+Technology Stack
 
-## Technology Stack
+Backend: Flask (Python)
+Database: PostgreSQL with SQLAlchemy ORM
+Authentication: Flask-Login, Bcrypt
+Forms: Flask-WTF, WTForms
+Email: Flask-Mail
+Scheduler: APScheduler
+Frontend: Bootstrap 5, Bootstrap Icons
+Template Engine: Jinja2
 
-- **Backend**: Flask (Python)
-- **Database**: PostgreSQL with SQLAlchemy ORM
-- **Authentication**: Flask-Login with Bcrypt
-- **Forms**: Flask-WTF with WTForms
-- **Email**: Flask-Mail
-- **Scheduler**: APScheduler
-- **Frontend**: Bootstrap 5, Bootstrap Icons
-- **Template Engine**: Jinja2
+Troubleshooting
+Database Connection Error
+Error: could not connect to server
+Solution: Check if PostgreSQL service is running:
+bash# Windows
+services.msc -> PostgreSQL
 
-## Future Enhancements
+# Linux
+sudo systemctl status postgresql
 
-Potential features for future releases:
-- Real-time notifications using WebSockets
-- Task comments and collaboration
-- File attachments for tasks
-- Advanced analytics with charts (Chart.js/Plotly)
-- Task templates and recurring tasks
-- Export functionality (PDF, CSV)
-- Task categories and tags
-- Calendar view for tasks
+# Mac
+brew services list
+Port Already in Use
+Error: Address already in use
+Solution: Change port in app.py:
+pythonapp.run(host='0.0.0.0', port=5001)
+Module Not Found Error
+ModuleNotFoundError: No module named 'flask'
+Solution: Install requirements again:
+bashpip install -r requirements.txt
+Security Features
+
+Password hashing with bcrypt
+Session management with Flask-Login
+CSRF protection with Flask-WTF
+Role-based route protection
+SQL injection prevention with SQLAlchemy ORM
+
+Future Enhancements
+
+Real-time notifications (WebSockets)
+Task comments and collaboration
+File attachments
+Advanced charts (Chart.js/Plotly)
+Task templates and recurring tasks
+Export to PDF/CSV
+Calendar view
+Task categories and tags
+
+Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss proposed changes.
+License
+This project is open source and available under the MIT License.
+Support
+For issues or questions:
+
+Create an issue on GitHub
+Contact: [Your Email]
+
+
+Made with ❤️ using Flask and PostgreSQL
