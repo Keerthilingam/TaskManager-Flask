@@ -1,3 +1,8 @@
+# Environment variables (MOST IMPORTANT - Add at top)
+.env
+.env.local
+.env.*.local
+
 # Python
 __pycache__/
 *.py[cod]
@@ -48,9 +53,21 @@ instance/
 *.sqlite
 *.sqlite3
 
-# Environment variables
-.env
-.env.local
-
 # Logs
 *.log
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# pyenv
+.python-version
+
+# Jupyter Notebook
+.ipynb_checkpoints
